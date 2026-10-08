@@ -5,6 +5,7 @@ of flocking behavior.
 """
 
 import numpy as np
+from scipy import stats
 
 from mesa.experimental.continuous_space import ContinuousSpaceAgent
 from mesa import DataCollector
@@ -49,6 +50,7 @@ class WEC(ContinuousSpaceAgent):
         population_size = 100,
         total_energy_harvested = 0,
         count_agent_in_zone = 0,
+        info_sep = 'Step' # 'Step', 'Probabilistic'
         ):
         """Create a new Boid flocker agent.
 
@@ -85,6 +87,7 @@ class WEC(ContinuousSpaceAgent):
         self.total_energy_harvested = total_energy_harvested
         self.population_size = population_size
         self.count_agent_in_zone = count_agent_in_zone
+        self.info_sep = info_sep
 
     def update_status(self):
         self.neighbors, _ = self.get_neighbors_in_radius(radius=self.vision)
@@ -195,9 +198,7 @@ class WEC(ContinuousSpaceAgent):
         return
   
     def get_separation(self):
-        #print("separation at step ", self.step_number," = ", self.separation)
-        neighbors_power = [self.model.power.get_power(n.position) for n in self.neighbors]
-        self.separation = separation(s_min=self.min_separation, agent_power=self.model.power.get_power(self.position), neighbours_power=neighbors_power)
+        separation(self)
         return
 
         
@@ -267,6 +268,7 @@ class STATIC(ContinuousSpaceAgent):
         population_size = 100,
         total_energy_harvested = 0,
         count_agent_in_zone = 0,
+        info_sep = 'Step' # 'Step', 'Probabilistic'
         ):
         """Create a new Boid flocker agent.
 
@@ -303,6 +305,7 @@ class STATIC(ContinuousSpaceAgent):
         self.total_energy_harvested = total_energy_harvested
         self.population_size = population_size
         self.count_agent_in_zone = count_agent_in_zone
+        self.info_sep = info_sep
 
         
     def update_status(self):
@@ -364,6 +367,7 @@ class GP(ContinuousSpaceAgent):
         population_size = 100,
         total_energy_harvested = 0,
         count_agent_in_zone = 0,
+        info_sep = 'Step' # 'Step', 'Probabilistic'
         ):
         """Create a new Boid flocker agent.
 
@@ -400,6 +404,7 @@ class GP(ContinuousSpaceAgent):
         self.total_energy_harvested = total_energy_harvested
         self.population_size = population_size
         self.count_agent_in_zone = count_agent_in_zone
+        self.info_sep = info_sep
 
     def update_status(self):
         self.neighbors, _ = self.get_neighbors_in_radius(radius=self.vision)
@@ -408,7 +413,6 @@ class GP(ContinuousSpaceAgent):
         self.get_battery()
         self.energy_hervesting()
         self.get_separation()
-        
 
 
 
@@ -502,9 +506,7 @@ class GP(ContinuousSpaceAgent):
         return
   
     def get_separation(self):
-        #print("separation at step ", self.step_number," = ", self.separation)
-        neighbors_power = [self.model.power.get_power(n.position) for n in self.neighbors]
-        self.separation = separation(s_min=self.min_separation, agent_power=self.model.power.get_power(self.position), neighbours_power=neighbors_power)
+        separation(self)
         return
 
         

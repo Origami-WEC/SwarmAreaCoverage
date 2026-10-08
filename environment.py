@@ -8,8 +8,8 @@ from mesa.space import PropertyLayer
 
 
 class Ocean(PropertyLayer):
-    def __init__(self,  width: int = 100, height: int = 100, max_power:int = 1, seed: int = 42):
-        super().__init__(name="Ocean", width=width, height=height, default_value=1)
+    def __init__(self,  width: int = 100, height: int = 100, max_power:int = 1.0, seed: int = 42):
+        super().__init__(name="Ocean", width=width, height=height, default_value=1.0)
         self.width = width
         self.height = height
         self.max_power = max_power
@@ -73,10 +73,10 @@ class Ocean(PropertyLayer):
     def update(self):
         # Crea una perturbazione casuale      
 
-        self.index += 1
-        np.random.seed(self.index)
-        perturbation = np.random.randn(self.width, self.height) * 0.15   
-        self.index+=1   #changing the random number during the time
+        #self.index += 1
+        #np.random.seed(self.index)
+        perturbation = np.random.randn(self.width, self.height) * 0.25   
+        #self.index+=1   #changing the random number during the time
     
         # Applica la perturbazione alla distribuzione attuale
         power_distribution = self.data + gaussian_filter(perturbation, sigma=self.sigma)
@@ -96,3 +96,14 @@ class Ocean(PropertyLayer):
     def plot(self, ax):
         ax.imshow(self.data, cmap='viridis')
         ax.colorbar()
+    
+    def stat(self):
+        flat = self.data.flatten()
+        #print("Min:", np.min(flat))
+        #print("Max:", np.max(flat))
+        #print("Mean:", np.mean(flat))
+        #print("Std Dev:", np.std(flat))
+        #print("25%:", np.percentile(flat, 25))
+        #print("Median (50%):", np.median(flat))
+        #print("75%:", np.percentile(flat, 75))
+        return np.mean(flat)
